@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Banking Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .module {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .module:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .module-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .module-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .page {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.4s ease;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .page-header h2 {
+            color: #667eea;
+            font-size: 2rem;
+        }
+
+        .back-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #218838;
+            transform: scale(1.02);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .response {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .response.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+
+        .response.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-card strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .page {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏦 Modern Banking</h1>
+            <p>Your trusted banking partner</p>
+        </div>
+
+        <!-- Homepage Modules -->
+        <div id="home" class="grid">
+            <div class="module" onclick="showPage('createAccount')">
+                <div class="module-icon">👤</div>
+                <div class="module-title">Create Account</div>
+            </div>
+            <div class="module" onclick="showPage('allAccounts')">
+                <div class="module-icon">📋</div>
+                <div class="module-title">All Accounts</div>
+            </div>
+            <div class="module" onclick="showPage('accountDetails')">
+                <div class="module-icon">🔍</div>
+                <div class="module-title">Account Details</div>
+            </div>
+            <div class="module" onclick="showPage('transaction')">
+                <div class="module-icon">💰</div>
+                <div class="module-title">Deposit / Withdraw</div>
+            </div>
+            <div class="module" onclick="showPage('balance')">
+                <div class="module-icon">💳</div>
+                <div class="module-title">Check Balance</div>
+            </div>
+            <div class="module" onclick="showPage('statement')">
+                <div class="module-icon">📊</div>
+                <div class="module-title">Mini Statement</div>
+            </div>
+            <div class="module" onclick="showPage('delete')">
+                <div class="module-icon">🗑️</div>
+                <div class="module-title">Delete Account</div>
+            </div>
+        </div>
+
+        <!-- Create Account Page -->
+        <div id="createAccount" class="page">
+            <div class="page-header">
+                <h2>Create New Account</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <form id="createForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullname" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter phone number" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="Enter email address" required>
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+            <div class="response" id="createResp"></div>
+        </div>
+
+        <!-- All Accounts Page -->
+        <div id="allAccounts" class="page">
+            <div class="page-header">
+                <h2>All Accounts</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <div class="response" id="allAccountsResp"></div>
+        </div>
+
+        <!-- Account Details Page -->
+        <div id="accountDetails" class="page">
+            <div class="page-header">
+                <h2>Account Details</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="detailAccNo" placeholder="Enter account number">
+            </div>
+            <button onclick="getAccountDetails()" class="btn-primary">Get Details</button>
+            <div class="response" id="accountDetailResp"></div>
+        </div>
+
+        <!-- Transaction Page -->
+        <div id="transaction" class="page">
+            <div class="page-header">
+                <h2>Deposit / Withdraw</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="transAccNo" placeholder="Enter account number">
+            </div>
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="transAmount" placeholder="Enter amount" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Transaction Type</label>
+                <select id="transType">
+                    <option value="deposit">Deposit</option>
+                    <option value="withdraw">Withdraw</option>
+                </select>
+            </div>
+            <button onclick="makeTransaction()" class="btn-primary">Submit Transaction</button>
+            <div class="response" id="transactionResp"></div>
+        </div>
+
+        <!-- Check Balance Page -->
+        <div id="balance" class="page">
+            <div class="page-header">
+                <h2>Check Balance</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="balanceAccNo" placeholder="Enter account number">
+            </div>
+            <button onclick="checkBalance()" class="btn-primary">Check Balance</button>
+            <div class="response" id="balanceResp"></div>
+        </div>
+
+        <!-- Mini Statement Page -->
+        <div id="statement" class="page">
+            <div class="page-header">
+                <h2>Mini Statement</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="stmtAccNo" placeholder="Enter account number">
+            </div>
+            <button onclick="getMiniStatement()" class="btn-primary">View Statement</button>
+            <div class="response" id="stmtResp"></div>
+        </div>
+
+        <!-- Delete Account Page -->
+        <div id="delete" class="page">
+            <div class="page-header">
+                <h2>Delete Account</h2>
+                <button class="back-btn" onclick="goHome()">← Back</button>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="deleteAccNo" placeholder="Enter account number">
+            </div>
+            <button onclick="deleteAccount()" class="btn-danger btn-primary">Delete Account</button>
+            <div class="response" id="deleteResp"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configure your backend URL here
+        const BASE_URL = "http://localhost:9394/api";
+        const BASE_URL1 = "http://localhost:9395/transactions";
+
+        function showPage(id) {
+            document.getElementById("home").style.display = "none";
+            document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+            document.getElementById(id).style.display = "block";
+            
+            if (id === "allAccounts") {
+                getAllAccounts();
+            }
+        }
+
+        function goHome() {
+            document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+            document.getElementById("home").style.display = "grid";
+            
+            // Clear all response divs
+            document.querySelectorAll(".response").forEach(r => r.innerHTML = "");
+            
+            // Clear all input fields
+            document.querySelectorAll("input").forEach(i => i.value = "");
+        }
+
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = '<div class="spinner"></div>';
+        }
+
+        function showSuccess(elementId, message) {
+            const elem = document.getElementById(elementId);
+            elem.className = "response success";
+            elem.innerHTML = message;
+        }
+
+        function showError(elementId, message) {
+            const elem = document.getElementById(elementId);
+            elem.className = "response error";
+            elem.innerHTML = message;
+        }
+
+        // Create Account
+        document.getElementById("createForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            showLoading("createResp");
+            
+            try {
+                const body = {
+                    fullname: document.getElementById("fullname").value,
+                    phone: document.getElementById("phone").value,
+                    email: document.getElementById("email").value,
+                };
+                
+                const res = await fetch(`${BASE_URL}/create`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                
+                if (!res.ok) throw new Error("Failed to create account");
+                
+                const data = await res.json();
+                showSuccess("createResp", `
+                    <div class="info-card">
+                        <strong>Account Created Successfully! ✅</strong><br><br>
+                        <strong>Account Number:</strong> ${data.accountnumber}<br>
+                        <strong>Name:</strong> ${data.fullname}<br>
+                        <strong>Email:</strong> ${data.email}<br>
+                        <strong>Phone:</strong> ${data.phone}<br>
+                        <strong>Balance:</strong> ₹${data.balance.toFixed(2)}
+                    </div>
+                `);
+                
+                document.getElementById("createForm").reset();
+            } catch (error) {
+                showError("createResp", `❌ Error: ${error.message}`);
+            }
+        });
+
+        // Get All Accounts
+        async function getAllAccounts() {
+            showLoading("allAccountsResp");
+            
+            try {
+                const res = await fetch(`${BASE_URL}/getDetails`);
+                if (!res.ok) throw new Error("Failed to fetch accounts");
+                
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    showError("allAccountsResp", "No accounts found in the system.");
+                    return;
+                }
+                
+                let table = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Account Number</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Balance (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                data.forEach(acc => {
+                    table += `
+                        <tr>
+                            <td>${acc.accountnumber}</td>
+                            <td>${acc.fullname}</td>
+                            <td>${acc.email}</td>
+                            <td>${acc.phone}</td>
+                            <td>₹${acc.balance.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                
+                table += `</tbody></table>`;
+                
+                const elem = document.getElementById("allAccountsResp");
+                elem.className = "response";
+                elem.innerHTML = table;
+            } catch (error) {
+                showError("allAccountsResp", `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Get Account Details
+        async function getAccountDetails() {
+            const accNo = document.getElementById("detailAccNo").value.trim();
+            
+            if (!accNo) {
+                showError("accountDetailResp", "Please enter an account number");
+                return;
+            }
+            
+            showLoading("accountDetailResp");
+            
+            try {
+                const res = await fetch(`${BASE_URL}/AccountDetails/${accNo}`);
+                if (!res.ok) throw new Error("Account not found");
+                
+                const data = await res.json();
+                
+                showSuccess("accountDetailResp", `
+                    <div class="info-card">
+                        <strong>Account Number:</strong> ${data.accountnumber}<br>
+                        <strong>Name:</strong> ${data.fullname}<br>
+                        <strong>Email:</strong> ${data.email}<br>
+                        <strong>Phone:</strong> ${data.phone}<br>
+                        <strong>Balance:</strong> ₹${data.balance.toFixed(2)}
+                    </div>
+                `);
+            } catch (error) {
+                showError("accountDetailResp", `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Make Transaction
+        async function makeTransaction() {
+            const accNo = document.getElementById("transAccNo").value.trim();
+            const amount = document.getElementById("transAmount").value;
+            const type = document.getElementById("transType").value;
+            
+            if (!accNo || !amount) {
+                showError("transactionResp", "Please enter all fields");
+                return;
+            }
+            
+            if (parseFloat(amount) <= 0) {
+                showError("transactionResp", "Amount must be greater than 0");
+                return;
+            }
+            
+            showLoading("transactionResp");
+            
+            try {
+                const res = await fetch(`${BASE_URL1}/depositOrWithdraw?accountNumber=${accNo}&amount=${amount}&type=${type}`, {
+                    method: "POST"
+                });
+                
+                const text = await res.text();
+                
+                if (res.ok) {
+                    showSuccess("transactionResp", `✅ ${type.toUpperCase()} successful! Amount: ₹${parseFloat(amount).toFixed(2)}`);
+                } else {
+                    showError("transactionResp", `❌ ${text}`);
+                }
+            } catch (error) {
+                showError("transactionResp", `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Check Balance
+        async function checkBalance() {
+            const accNo = document.getElementById("balanceAccNo").value.trim();
+            
+            if (!accNo) {
+                showError("balanceResp", "Please enter an account number");
+                return;
+            }
+            
+            showLoading("balanceResp");
+            
+            try {
+                const res = await fetch(`${BASE_URL}/getBalance/${accNo}`, {
+                    method: "GET"
+                });
+                
+                if (!res.ok) throw new Error("Failed to fetch balance");
+                
+                const balance = await res.text();
+                
+                showSuccess("balanceResp", `
+                    <div class="info-card">
+                        <strong>Current Balance:</strong> ₹${parseFloat(balance).toFixed(2)}
+                    </div>
+                `);
+            } catch (error) {
+                showError("balanceResp", `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Get Mini Statement
+        async function getMiniStatement() {
+            const accNo = document.getElementById("stmtAccNo").value.trim();
+            
+            if (!accNo) {
+                showError("stmtResp", "Please enter an account number");
+                return;
+            }
+            
+            showLoading("stmtResp");
+            
+            try {
+                const res = await fetch(`${BASE_URL1}/mini-statement/${accNo}`);
+                if (!res.ok) throw new Error("Failed to fetch statement");
+                
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    showError("stmtResp", "No transactions found for this account");
+                    return;
+                }
+                
+                let table = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Amount (₹)</th>
+                                <th>Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                data.forEach(t => {
+                    table += `
+                        <tr>
+                            <td>${t.type.toUpperCase()}</td>
+                            <td>₹${t.amount.toFixed(2)}</td>
+                            <td>${new Date(t.timestamp).toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+                
+                table += `</tbody></table>`;
+                
+                const elem = document.getElementById("stmtResp");
+                elem.className = "response";
+                elem.innerHTML = table;
+            } catch (error) {
+                showError("stmtResp", `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Delete Account
+        async function deleteAccount() {
+            const accNo = document.getElementById("deleteAccNo").value.trim();
+            
+            if (!accNo) {
+                showError("deleteResp", "Please enter an account number");
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to delete account ${accNo}? This action cannot be undone.`)) {
+                return;
+            }
+            
+            showLoading("deleteResp");
+            
+            try {
+                const res = await fetch(`${BASE_URL}/deleteAccount/${accNo}`, {
+                    method: "DELETE"
+                });
+                
+                const text = await res.text();
+                
+                if (res.ok) {
+                    showSuccess("deleteResp", `✅ Account deleted successfully`);
+                    document.getElementById("deleteAccNo").value = "";
+                } else {
+                    showError("deleteResp", `❌ ${text}`);
+                }
+            } catch (error) {
+                showError("deleteResp", `❌ Error: ${error.message}`);
+            }
+        }
+
+        // Initialize
+        goHome();
+    </script>
+</body>
+</html>
