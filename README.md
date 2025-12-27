@@ -62,18 +62,3 @@ A complete event-driven banking system built with Spring Boot microservices arch
 │ └── AccountService.java
 └── SimpleBankingApplication.java
 
-🔗 API Endpoints
------------------------------------------------------------------------------------------
-Method	         Endpoint	                                      Description
-------------------------------------------------------------------------------------------
-POST          /api/create	                                Create a new bank account
-GET	         /api/getDetails	                            Get all account details
-GET	         /api/AccountDetails/{accountnumber}      	  Get details of a specific account
-POST	       /api/transaction	                            Perform a deposit or withdrawal
-POST	       /api/CurrentBalance/{accountnumber}	        Get current balance
-GET	         /api/mini-statement/{accountnumber}       	  Get transaction history
-DELETE       /api/deleteAccount/{accountnumber}           Delete the Existing Account
---------------------------------------------------------------------------------------------
-
-
-
